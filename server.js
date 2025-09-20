@@ -15,6 +15,10 @@ app.use("/api/contacts", require("./routes/contactRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
 app.use("/api/taxes", require("./routes/taxRoutes"));
 app.use("/api/coa", require("./routes/coaRoutes"));
+app.use("/api/purchase-orders", require("./routes/purchaseRoutes"));
+app.use("/api/sales-orders", require("./routes/salesRoutes"));
+app.use("/api/payments", require("./routes/paymentRoutes"));
+app.use("/api/reports", require("./routes/reportRoutes"));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
