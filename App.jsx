@@ -4,6 +4,10 @@ import Header from "./components/Header";
 import CreateUser from "./features/auth/CreateUser";
 import LoginPage from "./features/auth/LoginPage";
 import SignUpPage from "./features/auth/SignUpPage";
+import Dashboard from "./features/dashboard/Dashboard";
+import ProductManagement from "./features/products/ProductManagement";
+import TestConnection from "./components/TestConnection";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Footer from "./components/Footer";
 
 function App() {
@@ -14,7 +18,17 @@ function App() {
 
         <main className="flex-1 p-8 bg-[white]">
           <Routes>
-            <Route path="/" element={<h2 className="text-center mt-50 text-gray-800">SHIV ACCOUNTS CLOUD</h2>} />
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/products" element={
+              <ProtectedRoute>
+                <ProductManagement />
+              </ProtectedRoute>
+            } />
+            <Route path="/test" element={<TestConnection />} />
             <Route path="/create-user" element={<CreateUser />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/sign-up" element={<SignUpPage />} />

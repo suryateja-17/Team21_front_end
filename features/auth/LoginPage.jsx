@@ -1,17 +1,32 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import apiService from "../../services/api";
 
 export default function LoginPage() {
-  const [loginId, setLoginId] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage("");
-    if (loginId === "test@example.com" && password === "password123") {
+    setIsLoading(true);
+
+    try {
+      const response = await apiService.login({ email, password });
+      
+      // Store token and user info
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('userRole', response.role);
+      
       alert("Login successful! Welcome!");
-    } else {
-      setErrorMessage("Invalid Login ID or Password");
+      navigate('/');
+    } catch (error) {
+      setErrorMessage(error.message || "Invalid email or password");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -22,12 +37,12 @@ export default function LoginPage() {
       </h2>
       <form onSubmit={handleLogin} className="space-y-4">
         <div>
-          <label className="block mb-1 font-medium text-[#493b29]">Login ID</label>
+          <label className="block mb-1 font-medium text-[#493b29]">Email</label>
           <input
-            type="text"
-            value={loginId}
-            onChange={(e) => setLoginId(e.target.value)}
-            placeholder="Enter your Login ID or Email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
             className="w-full border border-[#ce9872] rounded px-3 py-2"
             required
           />
@@ -46,9 +61,10 @@ export default function LoginPage() {
         {errorMessage && <p className="text-red-700 text-sm">{errorMessage}</p>}
         <button
           type="submit"
-          className="w-full bg-[#d3a17e] text-[#2c2217] font-semibold py-2 rounded hover:bg-[#493b29] hover:text-[#ecd9c6] transition"
+          disabled={isLoading}
+          className="w-full bg-[#d3a17e] text-[#2c2217] font-semibold py-2 rounded hover:bg-[#493b29] hover:text-[#ecd9c6] transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Sign In
+          {isLoading ? "Signing In..." : "Sign In"}
         </button>
       </form>
     </div>

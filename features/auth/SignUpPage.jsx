@@ -1,17 +1,22 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import apiService from "../../services/api";
 
 export default function SignUpPage() {
   const [name, setName] = useState("");
-  const [loginId, setLoginId] = useState("");  // Added loginId field
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [role, setRole] = useState("user");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
     setErrorMessage("");
-    if (!name || !loginId || !email || !password || !confirmPassword) {
+    
+    if (!name || !email || !password || !confirmPassword) {
       setErrorMessage("All fields are required.");
       return;
     }
@@ -23,7 +28,18 @@ export default function SignUpPage() {
       setErrorMessage("Password must be at least 8 characters.");
       return;
     }
-    alert(`Welcome, ${name}! Account created.`);
+
+    setIsLoading(true);
+
+    try {
+      await apiService.register({ name, email, password, role });
+      alert(`Welcome, ${name}! Account created successfully.`);
+      navigate('/login');
+    } catch (error) {
+      setErrorMessage(error.message || "Failed to create account. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -43,14 +59,16 @@ export default function SignUpPage() {
           />
         </div>
         <div>
-          <label className="block mb-1 font-medium text-[#493b29]">Login ID</label>
-          <input
-            type="text"
-            value={loginId}
-            onChange={(e) => setLoginId(e.target.value)}
+          <label className="block mb-1 font-medium text-[#493b29]">Role</label>
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
             className="w-full border border-[#ce9872] rounded px-3 py-2"
             required
-          />
+          >
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
         </div>
         <div>
           <label className="block mb-1 font-medium text-[#493b29]">Email</label>
@@ -87,9 +105,10 @@ export default function SignUpPage() {
 
         <button
           type="submit"
-          className="w-full bg-[#d3a17e] text-[#2c2217] font-semibold py-2 rounded hover:bg-[#493b29] hover:text-[#ecd9c6] transition"
+          disabled={isLoading}
+          className="w-full bg-[#d3a17e] text-[#2c2217] font-semibold py-2 rounded hover:bg-[#493b29] hover:text-[#ecd9c6] transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Sign Up
+          {isLoading ? "Creating Account..." : "Sign Up"}
         </button>
       </form>
     </div>
