@@ -1,5 +1,22 @@
 # Shiv Furniture - Full Stack Accounting System
 
+
+
+video 
+
+https://github.com/user-attachments/assets/0db5ec53-00b6-40fd-983f-9bb03cd6c3e4
+
+
+
+
+
+
+
+
+
+
+
+
 A complete full-stack application for furniture business accounting management built with React, Express.js, and MongoDB.
 
 ## Features
